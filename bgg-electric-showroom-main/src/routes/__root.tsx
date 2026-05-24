@@ -4,11 +4,8 @@ import {
   Link,
   createRootRouteWithContext,
   useRouter,
-  HeadContent,
-  Scripts,
 } from "@tanstack/react-router";
 
-import appCss from "../styles.css?url";
 import SchemaOrg from "@/components/seo/SchemaOrg";
 
 function NotFoundComponent() {
@@ -69,95 +66,10 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
 }
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
-  // TODO: substituir por domínio real antes do deploy em produção
-  head: () => ({
-    meta: [
-      { charSet: "utf-8" },
-      { name: "viewport", content: "width=device-width, initial-scale=1" },
-      {
-        name: "description",
-        content:
-          "Compre sua scooter elétrica em Caruaru com a BGG Mobilidade. Modelos SUDU e NADO premium com suporte local no Agreste pernambucano. Financiamento facilitado.",
-      },
-      { name: "robots", content: "index, follow" },
-      { name: "author", content: "BGG Mobilidade Elétrica" },
-      { name: "theme-color", content: "#050505" },
-
-      { property: "og:type", content: "website" },
-      {
-        property: "og:title",
-        content: "BGG Mobilidade Elétrica | Scooters Elétricas em Caruaru, PE",
-      },
-      {
-        property: "og:description",
-        content:
-          "Concessionária de scooters e motos elétricas premium em Caruaru, PE. Conheça os modelos disponíveis e simule seu financiamento.",
-      },
-      {
-        property: "og:image",
-        content: "https://bggmobilidade.com.br/og-image.jpg",
-      },
-      {
-        property: "og:url",
-        content: "https://bggmobilidade.com.br",
-      },
-      { property: "og:locale", content: "pt_BR" },
-      { property: "og:site_name", content: "BGG Mobilidade Elétrica" },
-
-      { name: "twitter:card", content: "summary_large_image" },
-      {
-        name: "twitter:title",
-        content: "BGG Mobilidade Elétrica | Caruaru, PE",
-      },
-      {
-        name: "twitter:description",
-        content:
-          "Scooters elétricas premium em Caruaru. Sem IPVA. Sem combustível. Agende seu test-drive.",
-      },
-      {
-        name: "twitter:image",
-        content: "https://bggmobilidade.com.br/og-image.jpg",
-      },
-    ],
-    links: [
-      {
-        rel: "stylesheet",
-        href: appCss,
-      },
-      {
-        rel: "canonical",
-        href: "https://bggmobilidade.com.br",
-      },
-      {
-        rel: "icon",
-        type: "image/svg+xml",
-        href: "/favicon.svg",
-      },
-      {
-        rel: "sitemap",
-        href: "https://bggmobilidade.com.br/sitemap.xml",
-      },
-    ],
-  }),
-  shellComponent: RootShell,
   component: RootComponent,
   notFoundComponent: NotFoundComponent,
   errorComponent: ErrorComponent,
 });
-
-function RootShell({ children }: { children: React.ReactNode }) {
-  return (
-    <html lang="pt-BR">
-      <head>
-        <HeadContent />
-      </head>
-      <body>
-        {children}
-        <Scripts />
-      </body>
-    </html>
-  );
-}
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
