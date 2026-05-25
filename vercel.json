@@ -1,0 +1,11 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "installCommand": "cd bgg-electric-showroom-main && npm install --include=dev",
+  "buildCommand": "cd bgg-electric-showroom-main && npm run build",
+  "outputDirectory": "bgg-electric-showroom-main/dist",
+  "trailingSlash": false,
+  "routes": [
+    { "handle": "filesystem" },
+    { "src": "/(.*)", "dest": "/index.html" }
+  ]
+}
