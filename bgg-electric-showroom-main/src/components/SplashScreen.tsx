@@ -4,7 +4,6 @@ import { useGSAP } from "@gsap/react";
 import { MapPin, ArrowRight } from "lucide-react";
 import heroVideoInicial from "@/assets/hero-videoinicial.mp4";
 import heroVideoPrincipal from "@/assets/hero-videoprincipal.mp4";
-import heroPoster from "@/assets/showroom.jpg";
 import VideoOtimizado from "@/components/ui/VideoOtimizado";
 
 type Props = { onEnter: () => void };
@@ -91,7 +90,7 @@ export default function SplashScreen({ onEnter }: Props) {
       <div className="splash-bg absolute inset-0 [will-change:transform]">
         <VideoOtimizado
           src={heroVideoInicial}
-          poster={heroPoster}
+          eager
           className="absolute inset-0 h-full w-full"
           videoAttrs={{ autoPlay: true, "aria-hidden": true }}
         />

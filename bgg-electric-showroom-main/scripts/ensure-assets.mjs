@@ -6,7 +6,6 @@ import { fileURLToPath } from "node:url";
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 
 const required = [
-  "src/assets/showroom.jpg",
   "src/assets/hero-videoinicial.mp4",
   "src/assets/hero-videoprincipal.mp4",
   "src/assets/public/A2.webp",

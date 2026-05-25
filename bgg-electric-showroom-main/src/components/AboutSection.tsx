@@ -2,7 +2,7 @@ import { useRef } from "react";
 import { gsap } from "gsap";
 import { useGSAP } from "@gsap/react";
 import { Clock, Phone, Calendar, CheckCircle2 } from "lucide-react";
-import showroomImg from "@/assets/showroom.jpg"; // TODO: substituir por showroom.webp após conversão (ver OTIMIZACAO-IMAGENS.md)
+import aboutShowroomImg from "@/assets/public/A2.webp";
 import { whatsappLink, WHATSAPP_DISPLAY } from "@/data/motorcycles";
 
 export default function AboutSection() {
@@ -69,7 +69,7 @@ export default function AboutSection() {
 
           <div className="about-fade mt-10 overflow-hidden border border-white/[0.06]">
             <img
-              src={showroomImg}
+              src={aboutShowroomImg}
               alt="Showroom BGG em Caruaru"
               loading="lazy"
               className="h-full w-full object-cover"

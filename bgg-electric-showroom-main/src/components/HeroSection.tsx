@@ -3,7 +3,6 @@ import { gsap } from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ChevronRight } from "lucide-react";
 import heroVideoPrincipal from "@/assets/hero-videoprincipal.mp4";
-import heroPoster from "@/assets/showroom.jpg";
 import { scrollToSection } from "@/lib/lenis";
 import VideoOtimizado from "@/components/ui/VideoOtimizado";
 
@@ -82,7 +81,7 @@ export default function HeroSection() {
       <div className="hero-bg absolute inset-0 -z-10 [will-change:transform]">
         <VideoOtimizado
           src={heroVideoPrincipal}
-          poster={heroPoster}
+          eager
           className="absolute inset-0 h-full w-full"
           videoAttrs={{ autoPlay: true, className: "h-full w-full object-cover [object-position:65%_center]" }}
         />

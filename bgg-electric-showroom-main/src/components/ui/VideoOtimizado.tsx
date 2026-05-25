@@ -31,8 +31,11 @@ type VideoOtimizadoProps = {
   src: string;
   /** Versão otimizada para mobile (ex: /videos/hero-mobile.mp4) */
   srcMobile?: string;
-  poster: string;
+  /** Omitir evita flash de imagem estática antes do vídeo */
+  poster?: string;
   thumbnailFallback?: string;
+  /** Splash/hero: carrega e reproduz imediatamente, sem lazy load */
+  eager?: boolean;
   className?: string;
   videoAttrs?: VideoHTMLAttributes<HTMLVideoElement>;
   onLoad?: () => void;
@@ -56,19 +59,21 @@ export default function VideoOtimizado({
   srcMobile,
   poster,
   thumbnailFallback,
+  eager = false,
   className = "",
   videoAttrs = {},
   onLoad,
 }: VideoOtimizadoProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
-  const [shouldLoad, setShouldLoad] = useState(false);
+  const [shouldLoad, setShouldLoad] = useState(eager);
   const [connectionType] = useState<ConnectionType>(getConnectionType);
   const [hasError, setHasError] = useState(false);
   const isMobile = useIsMobile();
 
   // Lazy load via IntersectionObserver — só carrega o vídeo quando entra na viewport
   useEffect(() => {
+    if (eager) return;
     const el = containerRef.current;
     if (!el) return;
 
@@ -79,24 +84,28 @@ export default function VideoOtimizado({
           observer.disconnect();
         }
       },
-      { rootMargin: "200px" }, // começa a carregar 200px antes de aparecer
+      { rootMargin: "200px" },
     );
 
     observer.observe(el);
     return () => observer.disconnect();
-  }, []);
+  }, [eager]);
 
-  // Slow-2g / 2g: não carrega vídeo, exibe thumbnail estática
+  // Slow-2g / 2g: não carrega vídeo; fallback só se houver imagem definida
   if (connectionType === "slow-2g" || connectionType === "2g" || hasError) {
     const thumbSrc = thumbnailFallback || poster;
     return (
       <div ref={containerRef} className={className}>
-        <img
-          src={thumbSrc}
-          alt=""
-          className="h-full w-full object-cover"
-          loading="lazy"
-        />
+        {thumbSrc ? (
+          <img
+            src={thumbSrc}
+            alt=""
+            className="h-full w-full object-cover"
+            loading="lazy"
+          />
+        ) : (
+          <div className="h-full w-full bg-[#050505]" aria-hidden />
+        )}
       </div>
     );
   }
@@ -117,8 +126,8 @@ export default function VideoOtimizado({
             - muted: necessário para autoplay
             - loop: para vídeos ambiente/background
           */
-          preload="none"
-          poster={poster}
+          preload={eager ? "auto" : "none"}
+          {...(poster ? { poster } : {})}
           playsInline
           muted
           loop

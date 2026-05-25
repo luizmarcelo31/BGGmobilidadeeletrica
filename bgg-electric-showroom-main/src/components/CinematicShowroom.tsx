@@ -10,6 +10,82 @@ import { motorcycles, whatsappLink } from "@/data/motorcycles";
 // e o useGSAP não consegue integrar com o sistema interno do GSAP.
 gsap.registerPlugin(ScrollTrigger, useGSAP);
 
+/** Mesmo reveal do título (cortina yPercent); moto acompanha do 1º ao último caractere */
+const SLIDE_ENTRANCE = {
+  duration: 1.15,
+  stagger: 0.1,
+  ease: "power3.out" as const,
+};
+
+function slideEntranceTotal(wordCount: number) {
+  return (
+    SLIDE_ENTRANCE.duration +
+    SLIDE_ENTRANCE.stagger * Math.max(0, wordCount - 1)
+  );
+}
+
+/** Reveal cortina: título + moto começam juntos e terminam juntos */
+function playSlideEntrance(
+  words: NodeListOf<HTMLElement> | HTMLElement[],
+  imgInners: NodeListOf<HTMLElement> | HTMLElement[],
+  fades: NodeListOf<HTMLElement> | HTMLElement[],
+) {
+  const wordEls = [...words];
+  const imgEls = [...imgInners];
+  const fadeEls = [...fades];
+  if (!wordEls.length || !imgEls.length) return null;
+
+  const total = slideEntranceTotal(wordEls.length);
+  const tl = gsap.timeline();
+
+  tl.fromTo(
+    wordEls,
+    { yPercent: 110 },
+    {
+      yPercent: 0,
+      duration: SLIDE_ENTRANCE.duration,
+      stagger: SLIDE_ENTRANCE.stagger,
+      ease: SLIDE_ENTRANCE.ease,
+    },
+    0,
+  )
+    .fromTo(
+      imgEls,
+      { yPercent: 110 },
+      {
+        yPercent: 0,
+        duration: total,
+        ease: SLIDE_ENTRANCE.ease,
+      },
+      0,
+    )
+    .fromTo(
+      fadeEls,
+      { y: 14, opacity: 0 },
+      {
+        y: 0,
+        opacity: 1,
+        duration: 0.5,
+        stagger: 0.06,
+        ease: "power2.out",
+      },
+      total - 0.4,
+    );
+
+  return tl;
+}
+
+function resetSlideEntrance(
+  words: NodeListOf<HTMLElement> | HTMLElement[],
+  imgInners: NodeListOf<HTMLElement> | HTMLElement[],
+  fades: NodeListOf<HTMLElement> | HTMLElement[],
+) {
+  const targets = [...words, ...imgInners, ...fades];
+  gsap.killTweensOf(targets);
+  gsap.set([...words, ...imgInners], { yPercent: 0, clearProps: "transform,will-change" });
+  gsap.set([...fades], { y: 0, opacity: 1, clearProps: "all" });
+}
+
 export default function CinematicShowroom() {
   const sectionRef = useRef<HTMLElement>(null);
   const [active, setActive] = useState(0);
@@ -60,6 +136,10 @@ export default function CinematicShowroom() {
           });
         },
       });
+
+      // Garante slide 0 visível + ativo antes do primeiro scroll
+      ScrollTrigger.refresh();
+      setActive(0);
       // Não retornar função de cleanup aqui: revertOnUpdate já cuida disso.
       // Retornar cleanup manual junto com revertOnUpdate causa dupla-limpeza
       // e o erro "_context2 is not a function" em alguns bundlers.
@@ -153,67 +233,25 @@ function MotorcycleSlide({
 
   useGSAP(
     () => {
-      if (!active || !rootRef.current) return;
+      if (!rootRef.current) return;
 
       const root = rootRef.current;
-      const slideImg = root.querySelector<HTMLElement>(".slide-img");
       const slideWords = root.querySelectorAll<HTMLElement>(".slide-word");
+      const slideImgInners = root.querySelectorAll<HTMLElement>(".slide-img-inner");
       const slideFades = root.querySelectorAll<HTMLElement>(".slide-fade");
-      const slideContent = root.querySelector<HTMLElement>(".slide-content");
 
-      if (!slideImg || !slideWords.length) return;
+      if (!active) {
+        resetSlideEntrance(slideWords, slideImgInners, slideFades);
+        return;
+      }
 
-      // Não é necessário matar a timeline manualmente aqui.
-      // revertOnUpdate reverte e recria tudo automaticamente a cada dependência alterada.
-      const tl = gsap.timeline();
-      const enterDuration = 1.15;
-
-      tl.from(slideImg, {
-        opacity: 0,
-        scale: 1.03,
-        x: 28,
-        duration: enterDuration,
-        ease: "power3.out",
-        clearProps: "will-change",
-      }, 0)
-        .from(
-          slideWords,
-          {
-            yPercent: 110,
-            duration: enterDuration,
-            stagger: 0.1,
-            ease: "power3.out",
-            clearProps: "will-change",
-          },
-          0,
-        )
-        .from(
-          slideFades,
-          {
-            y: 16,
-            opacity: 0,
-            duration: 0.5,
-            stagger: 0.06,
-            ease: "power2.out",
-          },
-          "-=0.6",
-        )
-        .from(
-          slideContent,
-          {
-            opacity: 0,
-            x: -40,
-            duration: 0.8,
-            ease: "power2.out",
-          },
-          "-=0.8",
-        );
+      playSlideEntrance(slideWords, slideImgInners, slideFades);
     },
     { scope: rootRef, dependencies: [active, m.id], revertOnUpdate: true },
   );
 
   return (
-    <div ref={rootRef} className="relative h-full w-full flex">
+    <div ref={rootRef} className="relative flex h-full w-full flex-col md:flex-row">
       {/* Painel de conteúdo — mobile: ocupa tudo + pt-0 (header já está fora), desktop: lado esquerdo com pt-56 */}
       <div className="relative z-10 flex w-full flex-col justify-start bg-[#050505] px-5 pb-16 pt-0 md:w-[40%] md:px-12 md:pt-56 lg:px-16">
         <div className="pointer-events-none absolute inset-y-0 right-0 w-24 bg-gradient-to-r from-transparent to-[#050505] md:w-32" />
@@ -280,30 +318,20 @@ function MotorcycleSlide({
         </div>
       </div>
 
-      {/* Painel da imagem — mobile: abaixo do conteúdo com altura fixa, desktop: lado direito */}
-      <div className="relative w-full h-[50vh] overflow-hidden md:hidden">
-        <img
-          src={m.image}
-          alt={`${m.name} disponível na BGG Mobilidade em Caruaru PE`}
-          loading="eager"
-          width={1200}
-          height={900}
-          className="slide-img h-full w-full object-cover [will-change:transform,opacity]"
-        />
-        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#050505] via-[#050505]/40 to-transparent" />
-        <div className="pointer-events-none absolute inset-0 grain" />
-      </div>
-      <div className="relative hidden w-0 overflow-hidden md:block md:w-[63%]">
-        <img
-          src={m.image}
-          alt={`${m.name} disponível na BGG Mobilidade em Caruaru PE`}
-          loading="eager"
-          width={1200}
-          height={900}
-          className="slide-img h-full w-full object-cover [will-change:transform,opacity]"
-        />
-        <div className="pointer-events-none absolute inset-0 bg-gradient-to-l from-transparent via-transparent to-black/60" />
-        <div className="pointer-events-none absolute inset-0">
+      {/* Painel da imagem — um único bloco (evita animar o painel mobile oculto no desktop) */}
+      <div className="relative h-[50vh] w-full shrink-0 overflow-hidden md:h-full md:w-[63%]">
+        <div className="slide-img-inner absolute inset-0 [will-change:transform]">
+          <img
+            src={m.image}
+            alt={`${m.name} disponível na BGG Mobilidade em Caruaru PE`}
+            loading="eager"
+            width={1200}
+            height={900}
+            className="slide-img h-full w-full object-cover"
+          />
+        </div>
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#050505] via-[#050505]/40 to-transparent md:bg-gradient-to-l md:from-transparent md:via-transparent md:to-black/60" />
+        <div className="pointer-events-none absolute inset-0 hidden md:block">
           <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
           <div className="absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-black/30 to-transparent" />
         </div>
@@ -355,60 +383,35 @@ function MotorcycleCardAnimado({ m, index }: { m: (typeof motorcycles)[number]; 
   }, []);
 
   useGSAP(() => {
-    if (!visible || !cardRef.current) return;
+    if (!cardRef.current) return;
 
     const card = cardRef.current;
-    const img = card.querySelector<HTMLElement>(".card-img");
+    const cardImgInner = card.querySelectorAll<HTMLElement>(".card-img-inner");
     const titleWords = card.querySelectorAll<HTMLElement>(".card-word");
     const fades = card.querySelectorAll<HTMLElement>(".card-fade");
 
-    const tl = gsap.timeline();
-    const enterDuration = 1.15;
+    if (!visible) {
+      resetSlideEntrance(titleWords, cardImgInner, fades);
+      return;
+    }
 
-    tl.from(img, {
-      opacity: 0,
-      scale: 1.03,
-      x: 24,
-      duration: enterDuration,
-      ease: "power3.out",
-      clearProps: "will-change",
-    }, 0)
-      .from(
-        titleWords,
-        {
-          yPercent: 110,
-          duration: enterDuration,
-          stagger: 0.1,
-          ease: "power3.out",
-          clearProps: "will-change",
-        },
-        0,
-      )
-      .from(
-        fades,
-        {
-          y: 14,
-          opacity: 0,
-          duration: 0.5,
-          stagger: 0.06,
-          ease: "power2.out",
-        },
-        "-=0.5",
-      );
+    playSlideEntrance(titleWords, cardImgInner, fades);
   }, { scope: cardRef, dependencies: [visible], revertOnUpdate: true });
 
   return (
     <article ref={cardRef} className="editorial-panel overflow-hidden">
       {/* ── BLOCO IMAGEM ── */}
       <div className="relative aspect-[16/10] w-full overflow-hidden">
-        <img
-          src={m.image}
-          alt={`${m.name} disponível na BGG Mobilidade em Caruaru PE`}
-          loading="lazy"
-          width={800}
-          height={600}
-          className="card-img h-full w-full object-cover [will-change:transform,opacity]"
-        />
+        <div className="card-img-inner absolute inset-0 [will-change:transform]">
+          <img
+            src={m.image}
+            alt={`${m.name} disponível na BGG Mobilidade em Caruaru PE`}
+            loading="lazy"
+            width={800}
+            height={600}
+            className="card-img h-full w-full object-cover"
+          />
+        </div>
 
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#0B0B0B] via-black/50 to-transparent" />
         <div className="pointer-events-none absolute inset-0 grain" />
