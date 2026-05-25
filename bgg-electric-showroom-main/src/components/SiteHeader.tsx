@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { Menu, X } from "lucide-react";
 import { scrollToSection } from "@/lib/lenis";
-import whatsappIcon from "@/assets/public/brand/whatsapp-cta.svg";
 import { whatsappLink } from "@/data/motorcycles";
 import logoWebp from "@/assets/public/brand/bgg-logo.webp";
 
@@ -67,9 +66,8 @@ export default function SiteHeader() {
             href={whatsappLink("Olá! Quero saber mais sobre as motos BGG.")}
             target="_blank"
             rel="noreferrer"
-            className="hidden items-center gap-2 border border-[var(--bgg-yellow)]/30 bg-[var(--bgg-yellow)]/5 px-4 py-2 text-[0.65rem] font-bold uppercase tracking-[0.18em] text-[var(--bgg-yellow)] transition-all hover:bg-[var(--bgg-yellow)] hover:text-black hover:border-[var(--bgg-yellow)] md:inline-flex"
+            className="hidden border border-[var(--bgg-yellow)]/30 bg-[var(--bgg-yellow)]/5 px-4 py-2 text-[0.65rem] font-bold uppercase tracking-[0.18em] text-[var(--bgg-yellow)] transition-all hover:bg-[var(--bgg-yellow)] hover:text-black hover:border-[var(--bgg-yellow)] md:inline-flex"
           >
-            <img src={whatsappIcon} alt="" className="h-4 w-4" />
             WhatsApp
           </a>
           <button

@@ -1,5 +1,4 @@
 import { whatsappLink, WHATSAPP_DISPLAY } from "@/data/motorcycles";
-import whatsappIcon from "@/assets/public/brand/whatsapp-cta.svg";
 import logoWebp from "@/assets/public/brand/bgg-logo.webp";
 
 export default function Footer() {
@@ -36,15 +35,14 @@ export default function Footer() {
         </div>
         <div>
           <div className="text-[10px] uppercase tracking-[0.3em] text-white/40">
-            Atendimento
+            CONTATO
           </div>
           <a
             href={whatsappLink("Olá BGG!")}
             target="_blank"
             rel="noreferrer"
-            className="mt-4 inline-flex items-center gap-2 text-sm text-white/75 hover:text-[var(--bgg-yellow)] transition-colors"
+            className="mt-4 block text-sm text-white/75 hover:text-[var(--bgg-yellow)] transition-colors"
           >
-            <img src={whatsappIcon} alt="" className="h-5 w-5" />
             {WHATSAPP_DISPLAY}
           </a>
           <p className="mt-3 text-sm text-white/55">Caruaru · PE</p>

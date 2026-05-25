@@ -2,7 +2,6 @@ import { useState, useRef } from "react";
 import { gsap } from "gsap";
 import { useGSAP } from "@gsap/react";
 import { Phone, Clock, MapPin, Check } from "lucide-react";
-import whatsappIcon from "@/assets/public/brand/whatsapp-cta.svg";
 import {
   motorcycles,
   whatsappLink,
@@ -161,7 +160,6 @@ export default function ContactSection() {
               type="submit"
               className="btn-mechanical mt-2 w-full justify-center py-4"
             >
-              <img src={whatsappIcon} alt="" className="h-5 w-5" />
               Quero falar com um consultor
             </button>
             <p className="text-[10px] uppercase tracking-[0.2em] text-white/35 text-center">

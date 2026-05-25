@@ -166,23 +166,23 @@ function MotorcycleSlide({
       // Não é necessário matar a timeline manualmente aqui.
       // revertOnUpdate reverte e recria tudo automaticamente a cada dependência alterada.
       const tl = gsap.timeline();
-      const textEnterDuration = 0.8;
+      const enterDuration = 1.15;
 
       tl.from(slideImg, {
         opacity: 0,
-        scale: 1.08,
-        x: 60,
-        duration: textEnterDuration,
-        ease: "expo.out",
+        scale: 1.03,
+        x: 28,
+        duration: enterDuration,
+        ease: "power3.out",
         clearProps: "will-change",
       }, 0)
         .from(
           slideWords,
           {
             yPercent: 110,
-            duration: textEnterDuration,
-            stagger: 0.09,
-            ease: "expo.out",
+            duration: enterDuration,
+            stagger: 0.1,
+            ease: "power3.out",
             clearProps: "will-change",
           },
           0,
@@ -363,23 +363,23 @@ function MotorcycleCardAnimado({ m, index }: { m: (typeof motorcycles)[number]; 
     const fades = card.querySelectorAll<HTMLElement>(".card-fade");
 
     const tl = gsap.timeline();
-    const textEnterDuration = 0.8;
+    const enterDuration = 1.15;
 
     tl.from(img, {
       opacity: 0,
-      scale: 1.06,
-      x: 40,
-      duration: textEnterDuration,
-      ease: "expo.out",
+      scale: 1.03,
+      x: 24,
+      duration: enterDuration,
+      ease: "power3.out",
       clearProps: "will-change",
     }, 0)
       .from(
         titleWords,
         {
           yPercent: 110,
-          duration: textEnterDuration,
-          stagger: 0.09,
-          ease: "expo.out",
+          duration: enterDuration,
+          stagger: 0.1,
+          ease: "power3.out",
           clearProps: "will-change",
         },
         0,

@@ -4,6 +4,7 @@
   "sideEffects": false,
   "type": "module",
   "scripts": {
+    "predev": "node scripts/ensure-assets.mjs",
     "dev": "vite --host 127.0.0.1",
     "build": "tsc --noEmit && vite build",
     "postbuild": "node -e \"require('fs').copyFileSync('dist/index.html','dist/404.html')\"",

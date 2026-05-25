@@ -1,12 +1,10 @@
 import { useRef } from "react";
 import { gsap } from "gsap";
 import { useGSAP } from "@gsap/react";
-import { ArrowDown, ChevronRight } from "lucide-react";
+import { ChevronRight } from "lucide-react";
 import heroVideoPrincipal from "@/assets/hero-videoprincipal.mp4";
 import heroPoster from "@/assets/showroom.jpg";
-import whatsappIcon from "@/assets/public/brand/whatsapp-cta.svg";
 import { scrollToSection } from "@/lib/lenis";
-import { whatsappLink } from "@/data/motorcycles";
 import VideoOtimizado from "@/components/ui/VideoOtimizado";
 
 export default function HeroSection() {
@@ -143,17 +141,6 @@ export default function HeroSection() {
               Explorar modelos
               <ChevronRight className="h-3.5 w-3.5" />
             </button>
-            <a
-              href={whatsappLink(
-                "Olá! Vim do site e quero falar com um consultor da BGG.",
-              )}
-              target="_blank"
-              rel="noreferrer"
-              className="hero-cta btn-outline w-full md:w-auto"
-            >
-              <img src={whatsappIcon} alt="" className="h-5 w-5" />
-              Falar no WhatsApp
-            </a>
           </div>
 
           <div className="mt-10 grid max-w-xl grid-cols-3 gap-3 border-t border-white/10 pt-6 md:gap-6 md:mt-16">
@@ -175,12 +162,6 @@ export default function HeroSection() {
         </div>
       </div>
 
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-white/40">
-        <span className="text-[10px] uppercase tracking-[0.3em]">
-          Role para explorar
-        </span>
-        <ArrowDown className="h-3.5 w-3.5" />
-      </div>
     </section>
   );
 }
