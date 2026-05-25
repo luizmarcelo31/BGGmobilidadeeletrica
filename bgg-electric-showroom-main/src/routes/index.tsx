@@ -11,7 +11,7 @@ import ManifestoSection from "@/components/ManifestoSection";
 import ContactSection from "@/components/ContactSection";
 import Footer from "@/components/Footer";
 import { initLenis, destroyLenis, startLenis } from "@/lib/lenis";
-import whatsappIcon from "@/assets/public/brand/whatsapp-cta.svg";
+import whatsappLogo from "@/assets/public/brand/whatsapp-logo.svg";
 import { whatsappLink } from "@/data/motorcycles";
 
 export const Route = createFileRoute("/")({
@@ -71,16 +71,21 @@ function Index() {
       </main>
       <Footer />
 
-      {/* Floating WhatsApp — estilo secundário para não competir com CTA primário da hero */}
+      {/* Floating WhatsApp — só o logo, tamanho do antigo botão pill (~48px) */}
       <a
         href={whatsappLink("Olá BGG! Vim do site.")}
         target="_blank"
         rel="noreferrer"
         aria-label="Falar no WhatsApp"
-        className="fixed bottom-[env(safe-area-inset-bottom,1.5rem)] right-5 z-30 inline-flex items-center gap-2 rounded-full border border-white/15 bg-black/80 px-4 py-2.5 text-[10px] font-bold uppercase tracking-[0.2em] text-white/80 backdrop-blur-md transition-all hover:border-[var(--bgg-yellow)] hover:text-[var(--bgg-yellow)]"
+        className="fixed bottom-[max(1.5rem,env(safe-area-inset-bottom))] right-5 z-30 block transition-transform hover:scale-105 active:scale-95"
       >
-        <img src={whatsappIcon} alt="" className="h-5 w-5" />
-        <span className="hidden sm:inline">WhatsApp</span>
+        <img
+          src={whatsappLogo}
+          alt=""
+          width={48}
+          height={48}
+          className="h-12 w-12 drop-shadow-[0_4px_24px_rgba(0,0,0,0.45)]"
+        />
       </a>
     </div>
   );
